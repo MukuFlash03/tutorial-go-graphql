@@ -7,8 +7,13 @@ package graph
 import (
 	"context"
 	"fmt"
+		"strconv"
 
 	"github.com/MukuFlash03/hackernews/graph/model"
+	// "github.com/MukuFlash03/hackernews/internal/auth"
+	"github.com/MukuFlash03/hackernews/internal/links"
+	// "github.com/MukuFlash03/hackernews/internal/users"
+	// "github.com/MukuFlash03/hackernews/pkg/jwt"
 )
 
 // CreateLink is the resolver for the createLink field.
@@ -24,14 +29,26 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 				address
 			}
 		}
+
+
+		var link model.Link
+		var user model.User
+		link.Address = input.Address
+		link.Title = input.Title
+		user.Name = "test123"
+		link.User = &user
+		return &link, nil
 	*/
-	var link model.Link
-	var user model.User
-	link.Address = input.Address
+
+	var link links.Link
 	link.Title = input.Title
-	user.Name = "test123"
-	link.User = &user
-	return &link, nil
+	fmt.Printf("Link Title = %s\n", link.Title)
+	link.Address = input.Address
+	fmt.Printf("Link Address = %s\n", link.Address)
+	// linkID := link.AddLink()
+	linkID := link.Save()
+	fmt.Printf("Link saved successfully with ID: %d", linkID)
+	return &model.Link{ID: strconv.FormatInt(linkID, 10), Title:link.Title, Address:link.Address}, nil
 }
 
 // CreateUser is the resolver for the createUser field.
