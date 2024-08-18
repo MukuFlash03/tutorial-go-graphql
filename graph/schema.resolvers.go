@@ -42,12 +42,8 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 
 	var link links.Link
 	link.Title = input.Title
-	fmt.Printf("Link Title = %s\n", link.Title)
 	link.Address = input.Address
-	fmt.Printf("Link Address = %s\n", link.Address)
-	// linkID := link.AddLink()
 	linkID := link.Save()
-	fmt.Printf("Link saved successfully with ID: %d", linkID)
 	return &model.Link{ID: strconv.FormatInt(linkID, 10), Title:link.Title, Address:link.Address}, nil
 }
 
@@ -79,7 +75,6 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 				}
 			}
 		}
-	*/
 	var links []*model.Link
 	dummyLink := model.Link {
 		Title: "Hello world",
@@ -90,6 +85,17 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 	}
 	links = append(links, &dummyLink)
 	return links, nil
+	*/
+	
+	var resultLinks []*model.Link
+	var dbLinks []links.Link
+	dbLinks = links.GetAll()
+
+	for _, link := range dbLinks {
+		resultLinks = append(resultLinks, &model.Link{ID: link.ID, Title: link.Title, Address: link.Address})
+	}
+
+	return resultLinks, nil
 }
 
 // Mutation returns MutationResolver implementation.
