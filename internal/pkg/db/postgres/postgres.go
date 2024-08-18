@@ -6,7 +6,7 @@ import (
 	// "os"
 	"database/sql"
 
-	"github.com/MukuFlash03/hackernews/internal/utils"
+	"github.com/MukuFlash03/hackernews/pkg/utils"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"

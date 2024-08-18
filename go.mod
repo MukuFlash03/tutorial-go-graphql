@@ -4,10 +4,12 @@ go 1.23.0
 
 require (
 	github.com/99designs/gqlgen v0.17.49
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/lib/pq v1.10.9
 	github.com/vektah/gqlparser/v2 v2.5.16
+	golang.org/x/crypto v0.20.0
 )
 
 require (

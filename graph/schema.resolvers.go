@@ -12,8 +12,8 @@ import (
 	"github.com/MukuFlash03/hackernews/graph/model"
 	// "github.com/MukuFlash03/hackernews/internal/auth"
 	"github.com/MukuFlash03/hackernews/internal/links"
-	// "github.com/MukuFlash03/hackernews/internal/users"
-	// "github.com/MukuFlash03/hackernews/pkg/jwt"
+	"github.com/MukuFlash03/hackernews/internal/users"
+	"github.com/MukuFlash03/hackernews/pkg/jwt"
 )
 
 // CreateLink is the resolver for the createLink field.
@@ -49,7 +49,17 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	// panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+
+	var user users.User
+	user.Username = input.Username
+	user.Password = input.Password
+	user.Create()
+	token, err := jwt.GenerateToken(user.Username)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }
 
 // Login is the resolver for the login field.

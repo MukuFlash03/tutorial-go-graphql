@@ -11,8 +11,8 @@ import (
 
 	"github.com/MukuFlash03/hackernews/graph"
 	// "github.com/MukuFlash03/hackernews/graph/generated"
-	// "github.com/MukuFlash03/hackernews/internal/auth"
-	// _ "github.com/MukuFlash03/hackernews/internal/auth"
+	"github.com/MukuFlash03/hackernews/internal/auth"
+	_ "github.com/MukuFlash03/hackernews/internal/auth"
 	database "github.com/MukuFlash03/hackernews/internal/pkg/db/postgres"
 
 )
@@ -26,6 +26,8 @@ func main() {
 	}
 
 	router := chi.NewRouter()
+
+	router.Use(auth.Middleware())
 
 	database.InitDB()
 	defer database.CloseDB()

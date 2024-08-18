@@ -6,7 +6,7 @@ import (
 	"github.com/MukuFlash03/hackernews/internal/users"
 	"log"
 
-	"github.com/MukuFlash03/hackernews/internal/utils"
+	"github.com/MukuFlash03/hackernews/pkg/utils"
 )
 
 type Link struct {
@@ -23,9 +23,7 @@ func (link Link) AddLink() int64 {
     db := database.Db
     _, err := db.Exec("INSERT INTO links (title, address) VALUES ($1, $2)", link.Title, link.Address)
 	fmt.Println("Insert complete / failed...")
-    if err != nil {
-        log.Fatal(err)
-    }
+	utils.CheckError(err, "fatal")
 
 	fmt.Println("Insert complete")
 
@@ -43,7 +41,6 @@ func (link Link) Save() int64 {
 
 	var insertedID int64
 	err = stmt.QueryRow(link.Title, link.Address).Scan(&insertedID)
-	
 	utils.CheckError(err, "fatal")
 	
 	log.Print("Row inserted successfully!")
