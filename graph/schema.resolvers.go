@@ -10,7 +10,7 @@ import (
 		"strconv"
 
 	"github.com/MukuFlash03/hackernews/graph/model"
-	// "github.com/MukuFlash03/hackernews/internal/auth"
+	"github.com/MukuFlash03/hackernews/internal/auth"
 	"github.com/MukuFlash03/hackernews/internal/links"
 	"github.com/MukuFlash03/hackernews/internal/users"
 	"github.com/MukuFlash03/hackernews/pkg/jwt"
@@ -48,13 +48,24 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 		}
 	*/
 
+	user := auth.ForContext(ctx)
+	if user == nil {
+		return &model.Link{}, fmt.Errorf("access denied")
+	}
+
 	var link links.Link
 	link.Title = input.Title
 	link.Address = input.Address
+	link.User = user
 
 	linkID := link.Save()
 
-	return &model.Link{ID: strconv.FormatInt(linkID, 10), Title:link.Title, Address:link.Address}, nil
+	graphqlUser := &model.User{
+		ID: user.ID,
+		Name: user.Username,
+	}
+
+	return &model.Link{ID: strconv.FormatInt(linkID, 10), Title:link.Title, Address:link.Address, User:graphqlUser}, nil
 }
 
 // CreateUser is the resolver for the createUser field.
@@ -123,7 +134,7 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input model.Refresh
 	if err != nil {
 		return "", err
 	}
-	
+
 	return token, nil
 }
 
@@ -167,7 +178,11 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 	dbLinks = links.GetAll()
 
 	for _, link := range dbLinks {
-		resultLinks = append(resultLinks, &model.Link{ID: link.ID, Title: link.Title, Address: link.Address})
+		graphqlUser := &model.User{
+			ID: link.User.ID,
+			Name: link.User.Username,
+		}
+		resultLinks = append(resultLinks, &model.Link{ID: link.ID, Title: link.Title, Address: link.Address, User: graphqlUser})
 	}
 
 	return resultLinks, nil
