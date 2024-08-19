@@ -38,12 +38,22 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 		user.Name = "test123"
 		link.User = &user
 		return &link, nil
+
+		mutation create{
+			createLink(input: {title: "something", address: "somewhere"}){
+				title,
+				address,
+				id,
+			}
+		}
 	*/
 
 	var link links.Link
 	link.Title = input.Title
 	link.Address = input.Address
+
 	linkID := link.Save()
+
 	return &model.Link{ID: strconv.FormatInt(linkID, 10), Title:link.Title, Address:link.Address}, nil
 }
 
@@ -51,25 +61,70 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
 	// panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 
+	/*
+		mutation {
+			createUser(input: {username: "user1", password: "123"})
+		}
+	*/
+
 	var user users.User
 	user.Username = input.Username
 	user.Password = input.Password
+
 	user.Create()
+
 	token, err := jwt.GenerateToken(user.Username)
 	if err != nil {
 		return "", err
 	}
+
 	return token, nil
 }
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
-	panic(fmt.Errorf("not implemented: Login - login"))
+	// panic(fmt.Errorf("not implemented: Login - login"))
+
+	/*
+
+	mutation {
+		login(input: {username: "user1", password: "123"})
+	}
+
+	*/
+
+	var user users.User
+	user.Username = input.Username
+	user.Password = input.Password
+	
+	correct := user.Authenticate()
+	if !correct {
+		return "", &users.WrongUsernameOrPasswordError{}
+	}
+
+	token, err := jwt.GenerateToken(user.Username)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
 // RefreshToken is the resolver for the refreshToken field.
 func (r *mutationResolver) RefreshToken(ctx context.Context, input model.RefreshTokenInput) (string, error) {
-	panic(fmt.Errorf("not implemented: RefreshToken - refreshToken"))
+	// panic(fmt.Errorf("not implemented: RefreshToken - refreshToken"))
+
+	username, err := jwt.ParseToken(input.Token)
+	if err != nil {
+		return "", fmt.Errorf("access denied")
+	}
+
+	token, err := jwt.GenerateToken(username)
+	if err != nil {
+		return "", err
+	}
+	
+	return token, nil
 }
 
 // Links is the resolver for the links field.
@@ -85,20 +140,30 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 				}
 			}
 		}
-	var links []*model.Link
-	dummyLink := model.Link {
-		Title: "Hello world",
-		Address: "https://www.google.com",
-		User: &model.User {
-			Name: "MukuFlash03",
-		},
-	}
-	links = append(links, &dummyLink)
-	return links, nil
+
+		var links []*model.Link
+		dummyLink := model.Link {
+			Title: "Hello world",
+			Address: "https://www.google.com",
+			User: &model.User {
+				Name: "MukuFlash03",
+			},
+		}
+		links = append(links, &dummyLink)
+		return links, nil
+
+		query {
+			links {
+				id
+				title
+				address
+			}
+		}
 	*/
 	
 	var resultLinks []*model.Link
 	var dbLinks []links.Link
+
 	dbLinks = links.GetAll()
 
 	for _, link := range dbLinks {
