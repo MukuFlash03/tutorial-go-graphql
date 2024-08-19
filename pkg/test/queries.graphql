@@ -1,0 +1,53 @@
+# Links
+query {
+  links {
+    id
+    title
+    address
+  }
+}
+
+# Links (Template)
+query {
+	links{
+    title
+    address
+    user{
+      name
+    }
+  }
+}
+
+# CreateLink
+mutation create{
+  createLink(input: {title: "something", address: "somewhere"}){
+    title,
+    address,
+    id,
+  }
+}
+
+# CreateUser
+mutation {
+  createUser(input: {username: "user1", password: "123"})
+}
+
+
+# Login
+mutation {
+  login(input: {username: "user1", password: "123"})
+}
+
+# CreateLink (Template)
+mutation {
+    createLink(input: {title: "new link", address:"http://address.org"}){
+        title,
+        user{
+            name
+        }
+        address
+    }
+}
+
+
+

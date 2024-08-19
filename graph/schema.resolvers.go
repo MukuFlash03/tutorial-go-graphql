@@ -20,17 +20,7 @@ import (
 func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
 	// panic(fmt.Errorf("not implemented: CreateLink - createLink"))
 	/*
-		mutation {
-			createLink(input: {title: "new link", address:"http://address.org"}){
-				title,
-				user{
-					name
-				}
-				address
-			}
-		}
-
-
+		// Template
 		var link model.Link
 		var user model.User
 		link.Address = input.Address
@@ -38,14 +28,6 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 		user.Name = "test123"
 		link.User = &user
 		return &link, nil
-
-		mutation create{
-			createLink(input: {title: "something", address: "somewhere"}){
-				title,
-				address,
-				id,
-			}
-		}
 	*/
 
 	user := auth.ForContext(ctx)
@@ -72,12 +54,6 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
 	// panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 
-	/*
-		mutation {
-			createUser(input: {username: "user1", password: "123"})
-		}
-	*/
-
 	var user users.User
 	user.Username = input.Username
 	user.Password = input.Password
@@ -95,15 +71,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
 	// panic(fmt.Errorf("not implemented: Login - login"))
-
-	/*
-
-	mutation {
-		login(input: {username: "user1", password: "123"})
-	}
-
-	*/
-
+	
 	var user users.User
 	user.Username = input.Username
 	user.Password = input.Password
@@ -142,16 +110,8 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input model.Refresh
 func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 	// panic(fmt.Errorf("not implemented: Links - links"))
 	/*
-		query {
-			links{
-				title
-				address,
-				user{
-					name
-				}
-			}
-		}
 
+		// Template
 		var links []*model.Link
 		dummyLink := model.Link {
 			Title: "Hello world",
@@ -162,14 +122,6 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 		}
 		links = append(links, &dummyLink)
 		return links, nil
-
-		query {
-			links {
-				id
-				title
-				address
-			}
-		}
 	*/
 	
 	var resultLinks []*model.Link
